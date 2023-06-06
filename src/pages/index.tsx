@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { PrismaClient, Question } from "@prisma/client";
+import { fetchData } from "next-auth/client/_utils";
 
 const OptionMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,15 +28,14 @@ const OptionMenu = () => {
               className="bar absolute right-5 top-5 cursor-pointer p-5"
               onClick={toggleMenu}
             >
-              <FaTimes className="text-5xl text-gray-700" />
+              <FaTimes className="text-6xl text-gray-700" />
             </div>
 
-            <p className="flex items-center justify-center p-10 text-5xl font-medium text-gray-700 duration-200 hover:text-gray-500">
-              Support
-            </p>
-            <p className="flex items-center justify-center p-10 text-5xl font-medium text-gray-700 duration-200 hover:text-gray-500">
-              Create a question
-            </p>
+            <a href="support">
+              <p className=" text-5xl font-medium text-gray-700 duration-300 hover:text-gray-500">
+                Contact
+              </p>
+            </a>
           </div>
         )}
       </div>
@@ -51,34 +51,43 @@ const Home: NextPage = () => {
   const [percentage2, setPercentage2] = useState<number | null>(null);
 
   const handleOptionClick = async (option: 1 | 2) => {
-    // get the info for the current question specificly the ID
+    // Get the info for the current question, specifically the ID
 
-    const id = questions[currentQuestion]?.id;
+    if (percentage1 !== null && percentage2 !== null) {
+      setPercentage1(null);
+      setPercentage2(null);
+      setCurrentQuestion(
+        (previousQuestion) => (previousQuestion + 1) % questions.length
+      );
+    } else {
+      const id = questions[currentQuestion]?.id;
+      const res = await fetch("api/createAnswer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          questionId: id,
+          option: option,
+        }),
+      });
 
-    // call the API api/choice with the ID and option selected
+      const res2 = await fetch("api/getPercentage?id=" + id);
+      const json2 = await res2.json();
+      setPercentage1(json2.percentage);
+      setPercentage2(json2.percentage2);
+    }
 
-    const res = await fetch("api/createAnswer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        questionId: id,
-        option: option,
-      }),
-    });
-
-    setCurrentQuestion(
-      (previousQuestion) => (previousQuestion + 1) % questions.length
-    );
+    // Move to the next question
   };
 
   const getQuestions = async () => {
     const res = await fetch("api/getQuestions");
     const json = await res.json();
-    console.log(json);
     setQuestions(json);
   };
+
+  // ...
 
   useEffect(() => {
     getQuestions();
@@ -96,22 +105,28 @@ const Home: NextPage = () => {
         ) : (
           <div className="grid grid-cols-2">
             <div
-              className={`flex h-screen cursor-pointer items-center justify-center bg-stone-100 p-10 text-center text-3xl font-medium duration-300 ${
+              className={`flex h-screen cursor-pointer flex-col items-center justify-center bg-stone-100 p-10 text-center text-3xl font-medium duration-300 ${
                 selectedOption === 1 ? "text-gray-400" : "text-gray-900"
               }`}
               onClick={() => handleOptionClick(1)}
             >
-              <p>{questions[currentQuestion]?.option1}</p>
-              {selectedOption === 1 && <p>{percentage1}%</p>}
+              {percentage1 ? (
+                <p>{percentage1}%</p>
+              ) : (
+                <p>{questions[currentQuestion]?.option1}</p>
+              )}
             </div>
             <div
-              className={`flex h-screen cursor-pointer items-center justify-center bg-gray-900 p-10 text-center text-3xl font-medium duration-300 ${
-                selectedOption === 2 ? "text-gray-500" : "text-stone-100"
+              className={`flex h-screen cursor-pointer flex-col items-center justify-center bg-gray-900 p-10 text-center text-3xl font-medium duration-300 ${
+                selectedOption === 2 ? "text-gray-400" : "text-stone-100"
               }`}
               onClick={() => handleOptionClick(2)}
             >
-              <p>{questions[currentQuestion]?.option2}</p>
-              {selectedOption === 2 && <p>{percentage2}%</p>}
+              {percentage2 ? (
+                <p>{percentage2}%</p>
+              ) : (
+                <p>{questions[currentQuestion]?.option2}</p>
+              )}
             </div>
           </div>
         )}

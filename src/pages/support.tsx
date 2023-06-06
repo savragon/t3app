@@ -14,7 +14,7 @@ const OptionMenu = () => {
           className="bar absolute right-5 top-5 cursor-pointer p-5"
           onClick={handleGoBack}
         >
-          <FaArrowAltCircleLeft className="text-5xl text-black" />
+          <FaArrowAltCircleLeft className="text-5xl text-white" />
         </div>
       </div>
     </div>
@@ -26,18 +26,19 @@ const SupportPage = () => {
     <>
       <div>
         <OptionMenu />
-        <div className="flex h-screen flex-col items-center justify-center bg-stone-200">
-          <h1 className="mb-10 text-5xl font-bold text-gray-900">Support</h1>
-          <div className="w-4/5 max-w-2xl rounded-lg bg-white p-8 shadow-lg">
-            <p className="flex items-center justify-center text-6xl font-medium">
-              FORUMS
-            </p>
-          </div>
-          <div>
-            <div className="">
-              <h1 className="flex items-center justify-center p-10 text-4xl font-medium">
-                Contact
-              </h1>
+        <div className="flex h-screen flex-col bg-gray-800">
+          <div className="mt-36">
+            <h1 className="flex items-center justify-center p-10 text-4xl font-medium text-white">
+              Contact
+            </h1>
+            <div className="mx-96 rounded-md bg-white shadow-lg">
+              <h1 className="p-2 text-gray-500">Email</h1>
+            </div>
+            <div className="mx-96 mt-5 rounded-md bg-white shadow-lg">
+              <h1 className="p-2 text-gray-500">Reason for contact</h1>
+            </div>
+            <div className="mx-96 mt-5 h-48 rounded-md bg-white shadow-lg">
+              <h1 className="p-2 text-gray-500">Explain</h1>
             </div>
           </div>
         </div>

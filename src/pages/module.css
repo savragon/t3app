@@ -1,0 +1,46 @@
+.optionMenuContainer {
+    position: relative;
+  }
+  
+  .optionMenuButton {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    z-index: 999;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .menuIcon {
+    font-size: 2rem;
+    color: #fff;
+  }
+  
+  .optionMenuContent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .optionMenuContent.show {
+    opacity: 1;
+  }
+  
+  .optionMenuItem {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+  
